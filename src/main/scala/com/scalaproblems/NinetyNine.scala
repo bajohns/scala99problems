@@ -68,27 +68,15 @@ object NinetyNine {
 
 
 
-  def group[A](xs: List[A]): List[List[A]] = xs match {
-    case Nil => Nil
-    case x :: tail => {
-      val (a, b) = tail.span(_ == x)
-      (x :: tail.takeWhile(_ == x)) :: pack(tail)
-      (x :: a) :: group(b)
-    }
-  }
+  def group[A](xs: List[A]): List[List[A]] = undefined
   
-  def pack[A](xs: List[A]): List[A] = group(xs) map ( _.head )
+  def pack[A](xs: List[A]): List[A] = undefined
   
-  def encode[A](xs: List[A]): List[(Int, A)] = group(xs) map ( ys => (length(ys), ys.head) )
+  def encode[A](xs: List[A]): List[(Int, A)] = undefined
   
-  def encodeModified[A](xs: List[A]): List[Any] = group(xs) map ( _ match {
-    case List(x) => x
-    case ys => (length(ys), ys.head)
-  })
+  def encodeModified[A](xs: List[A]): List[Any] = undefined
   
-  def decode[A](xs: List[(Int, A)]): List[A] = xs flatMap { 
-    case (n, x) => Stream.fill(n)(x)
-  }
+  def decode[A](xs: List[(Int, A)]): List[A] = undefined
   
   def encodeDirect[A](xs: List[A]): List[(Int, A)] = undefined
   
@@ -99,13 +87,9 @@ object NinetyNine {
   def dropN[A](n: Int, xs: List[A]): List[A] = undefined
   
   def split[A](n: Int, xs: List[A]): (List[A], List[A]) = undefined
-  
-  // scala> slice(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
-  // res0: List[Symbol] = List('d, 'e, 'f, 'g)
+
   def slice[A](start: Int, end: Int, xs: List[A]): List[A] = undefined
-  
-  // rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
-  // res0: List[Symbol] = List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k, 'a, 'b, 'c)
+
   def rotate[A](n: Int, xs: List[A]): List[A] = undefined
   
   // P20
@@ -136,19 +120,14 @@ object NinetyNine {
   def lsort[A](xs: List[List[A]]): List[List[A]] = undefined
   
   // p31: Determine whether a given integer number is prime.
-  def isPrime(n: Int): Boolean = {
-    def sieve(s: Stream[Int]): Stream[Int] = Stream.cons(s.head, sieve(s.tail filter { _ % s.head != 0 }))
-    def primes: Stream[Int] = Stream.cons(2, Stream.from(3, 2).filter(x => isPrime(x)))
-    
-    primes.takeWhile(_ <= Math.sqrt(n)).forall(n % _ != 0)
-  }
+  def isPrime(n: Int): Boolean = undefined
   
   // p32: Determine the greatest common divisor of two positive integer numbers.
   // Hint: Euclidean or Binary (Stein's)
-  def gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m % n)  
+  def gcd(m: Int, n: Int): Int = undefined
   
   // p33: Determine whether two positive integer numbers are coprime.
-  def coprime(m: Int, n: Int): Boolean = gcd(m, n) == 1
+  def coprime(m: Int, n: Int): Boolean = undefined
   
   // p34: Calculate Euler's totient function phi(m)
   def totient(n: Int): Int = undefined
@@ -165,7 +144,7 @@ object NinetyNine {
   // p38: Compare the two methods of calculating Euler's totient function
   
   // p39: 
-  def primesInRange(r: Range): List[Int] = r filter (isPrime(_)) toList
+  def primesInRange(r: Range): List[Int] = undefined
   
   
 }
