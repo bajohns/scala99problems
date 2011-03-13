@@ -21,9 +21,9 @@ object NinetyNine {
   
   def elementAt[A](n:Int, xs: List[A]): Option[A] =    {
     def findKthElem(count:Int, list: List[A]): Option[A] =   list match {
-      case x if count == 0 => x.headOption
-      case x :: Nil if count > 0 => None
-      case x :: tail if count > 0 => findKthElem(count -1, tail)
+      case Nil => None
+      case x :: Nil  => if (count == 0) Some(x) else None
+      case x :: tail => if (count == 0) Some(x) else findKthElem(count -1, tail)
     }
     if(n > xs.length) None
     else findKthElem(n -1, xs)
@@ -65,26 +65,71 @@ object NinetyNine {
 
 
 
+  def pack[A](xs: List[A]): List[List[A]] = {
+    def packHelper(ret:List[List[A]], acc:List[A], orig:List[A], cur: A):List[List[A]] = {
+        orig match{
+          case Nil => reverse(acc :: ret)
+          case x :: Nil => if (x == cur) packHelper(ret, x :: acc, Nil, x)
+                        else  packHelper(acc :: ret , List(x), Nil, x)
+          case x :: tail => if (x == cur) packHelper(ret, x :: acc, tail, x)
+                        else  packHelper(acc :: ret , List(x), tail, x)
+        }
+    }
+    if (!xs.isEmpty) packHelper(Nil, Nil, xs, xs.head) else throw new NoSuchElementException
+  }
+  
+  def encode[A](xs: List[A]): List[(Int, A)] = {
+    pack(xs) map { x => (length(x), x.head)}
+  }
+  
+  def encodeModified[A](xs: List[A]): List[Any] = {
+    pack(xs) map { x =>
+        if(length(x) == 1) x.head
+        else (length(x), x.head)
+    }
+  }
 
+  //special
+  def accumulate[A] (acc: List[A], count:Int, symbol:A):List[A] = {
+    if (count == 0) acc else accumulate(symbol :: acc, count - 1, symbol)
+  }
 
+  def decode[A](xs: List[(Int, A)]): List[A] = {
 
-  def group[A](xs: List[A]): List[List[A]] = undefined
+    xs flatMap {
+        case (count, symbol) => accumulate(Nil, count, symbol)
+    }
+  }
   
-  def pack[A](xs: List[A]): List[A] = undefined
+  def encodeDirect[A](xs: List[A]): List[(Int, A)] = {
+    def packHelper(ret:List[(Int, A)], acc:Int, orig:List[A], cur: A): List[(Int, A)] = {
+        orig match{
+          case Nil => ret
+          case x :: Nil => if (x == cur) reverse((acc +1, x) :: ret)
+                        else  reverse((1, x) :: (acc, cur) :: ret)
+          case x :: tail => if (x == cur) packHelper(ret, acc +1, tail, x)
+                        else  packHelper((acc, cur) :: ret , 1, tail, x)
+        }
+    }
+    if (!xs.isEmpty) packHelper(Nil, 0, xs, xs.head) else throw new NoSuchElementException
+  }
   
-  def encode[A](xs: List[A]): List[(Int, A)] = undefined
+  def duplicate[A](xs: List[A]): List[A] = {
+    duplicateN(2,xs)
+  }
   
-  def encodeModified[A](xs: List[A]): List[Any] = undefined
-  
-  def decode[A](xs: List[(Int, A)]): List[A] = undefined
-  
-  def encodeDirect[A](xs: List[A]): List[(Int, A)] = undefined
-  
-  def duplicate[A](xs: List[A]): List[A] = undefined
-  
-  def duplicateN[A](n: Int, xs: List[A]): List[A] = undefined
-  
-  def dropN[A](n: Int, xs: List[A]): List[A] = undefined
+  def duplicateN[A](n: Int, xs: List[A]): List[A] = {
+    val rev = reverse(xs)
+    rev.tail.foldLeft(accumulate(Nil, n, rev.head)) { (acc, x) => accumulate (acc, n, x)}
+  }
+  def dropN[A](n: Int, xs: List[A]): List[A] = {
+     def filterHelper (pos:Int, acc: List[A], orig:List[A]):List[A] = (pos, orig) match {
+       case (_, Nil) => reverse(acc)
+       case (1, h :: tail ) => filterHelper(n,acc, tail)
+       case (_, h :: tail ) => filterHelper(pos -1, h :: acc, tail)
+     }
+     filterHelper(n, Nil, xs)
+  }
   
   def split[A](n: Int, xs: List[A]): (List[A], List[A]) = undefined
 
