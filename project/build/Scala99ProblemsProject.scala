@@ -10,6 +10,6 @@ class Scala99Problems(info: ProjectInfo) extends DefaultWebProject(info) with Au
 
   // Scala Libraries
   val scalaCompiler = "org.scala-lang" % "scala-compiler" % scalaVer % "test"
-  val specs = "org.scala-tools.testing" %% "specs" % "1.6.5"  % "test" withSources()
-
+  val specs = "org.scala-tools.testing" %% "specs" % "1.6.7"  % "test" withSources()
+  val scalaCheck = "org.scala-tools.testing" %% "scalacheck" % "1.8" % "test" withSources()
 }
