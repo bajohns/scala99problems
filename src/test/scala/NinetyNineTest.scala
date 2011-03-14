@@ -145,4 +145,61 @@ class NinetyNineTest extends Specification {
         NN.dropN(3, orig) must_== reduced
       }
     }
+
+    "P17 split" should {
+      val orig = List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)
+      val split = (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+
+      "create a new tuple " + split.toString + " from " + orig.toString in{
+        NN.split(3, orig) must_== split
+      }
+    }
+
+    "P18 slice" should {
+      val orig = List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)
+      val slice = List('d, 'e, 'f, 'g)
+
+      "create a new list " + slice.toString + " from " + orig.toString in{
+        NN.slice(3, 7, orig) must_== slice
+      }
+    }
+
+    "P19 rotate" should {
+      val orig = List('a, 'b, 'c,   'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)     //len:11
+      val rot1 = List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k,   'a, 'b, 'c)
+      val rot2 = List('j, 'k,   'a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i)
+
+      "rotate " + orig.toString + " 3 places to create " + rot1.toString in{
+        NN.rotate(3, orig) must_== rot1
+      }
+      "rotate " + orig.toString + " -2 places to create " + rot2.toString in{
+        NN.rotate(-2, orig) must_== rot2
+      }
+    }
+
+    "P20 remove" should {
+      val orig = List('a, 'b, 'c, 'd)
+      val end = (List('a, 'c, 'd),'b)
+
+      "remove element b from  " + orig.toString + " and return " + end.toString in{
+        NN.removeAt(1, orig) must_== end
+      }
+    }
+
+    "P21 insert" should {
+      val orig = List('a, 'b, 'c, 'd)
+      val end = List('a, 'new, 'b, 'c, 'd)
+
+      "insert element 'new into  " + orig.toString + " and return " + end.toString in{
+        NN.insertAt('new, 1, orig) must_== end
+      }
+    }
+
+    "P22 range" should {
+      val end = List(4, 5, 6, 7, 8, 9)
+
+      "given 4 and 9 create a list " + end.toString in{
+        NN.range(4, 9) must_== end
+      }
+    }
 }

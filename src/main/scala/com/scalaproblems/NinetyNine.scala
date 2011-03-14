@@ -66,13 +66,13 @@ object NinetyNine {
 
 
   def pack[A](xs: List[A]): List[List[A]] = {
-    def packHelper(ret:List[List[A]], acc:List[A], orig:List[A], cur: A):List[List[A]] = {
+    def packHelper(rss:List[List[A]], acc:List[A], orig:List[A], cur: A):List[List[A]] = {
         orig match{
-          case Nil => reverse(acc :: ret)
-          case x :: Nil => if (x == cur) packHelper(ret, x :: acc, Nil, x)
-                        else  packHelper(acc :: ret , List(x), Nil, x)
-          case x :: tail => if (x == cur) packHelper(ret, x :: acc, tail, x)
-                        else  packHelper(acc :: ret , List(x), tail, x)
+          case Nil => reverse(acc :: rss)
+          case x :: Nil => if (x == cur) packHelper(rss, x :: acc, Nil, x)
+                        else  packHelper(acc :: rss , List(x), Nil, x)
+          case x :: tail => if (x == cur) packHelper(rss, x :: acc, tail, x)
+                        else  packHelper(acc :: rss , List(x), tail, x)
         }
     }
     if (!xs.isEmpty) packHelper(Nil, Nil, xs, xs.head) else throw new NoSuchElementException
@@ -131,21 +131,51 @@ object NinetyNine {
      filterHelper(n, Nil, xs)
   }
   
-  def split[A](n: Int, xs: List[A]): (List[A], List[A]) = undefined
+  def split[A](n: Int, xs: List[A]): (List[A], List[A]) = {
+    def splitHelper(pos:Int, hs:List[A], ts:List[A]):(List[A], List[A]) = (pos, ts) match{
+      case (_ , Nil) => (reverse(hs), Nil)
+      case (0, x :: tail) => (reverse(x :: hs), tail)
+      case (_, x :: tail) => splitHelper(pos -1 , x :: hs, tail)
+    }
+    splitHelper(n-1, Nil, xs)
+  }
 
-  def slice[A](start: Int, end: Int, xs: List[A]): List[A] = undefined
+  def slice[A](start: Int, end: Int, xs: List[A]): List[A] = {
 
-  def rotate[A](n: Int, xs: List[A]): List[A] = undefined
+    def sliceHelper(s:Int, e:Int, ss:List[A], ts:List[A]):List[A] = (s, e, ts) match{
+      case (_, _ , Nil) => reverse(ss)
+      case (0, 0, x :: tail) => reverse(ss)
+      case (0, ne, x :: tail) => sliceHelper(0, ne -1 , x :: ss, tail)
+      case (ns, ne, x :: tail) => sliceHelper(ns -1 , ne -1 , ss, tail)
+    }
+    sliceHelper(start, end, Nil, xs)
+  }
+  def rotate[A](n: Int, xs: List[A]): List[A] = {
+    val len = length(xs)
+    val cut = if (n >= 0)  n else len + n
+
+    slice(cut, len, xs) ::: slice(0,cut,xs)
+  }
   
   // P20
-  def removeAt[A](n: Int, xs: List[A]): List[A] = undefined
-  
+  def removeAt[A](n: Int, xs: List[A]): (List[A], A) = split(n,xs) match {
+    case (_, Nil) => throw new NoSuchElementException
+    case (hs, x :: ts) => (hs ::: ts, x)
+  }
   // P21
-  def insertAt[A](x: A, n: Int, xs: List[A]): List[A] = undefined
-  
+  //Inefficient - revise
+  def insertAt[A](x: A, n: Int, xs: List[A]): List[A] = split(n, xs) match{
+    case (hs, ts) => hs ::: x :: ts
+  }
   // P22
-  def range(start: Int, end: Int): List[Int] = undefined
-  
+  def range(start: Int, end: Int): List[Int] = {
+
+    def rangeHelper(num:Int, xs:List[Int]):List[Int] = {
+      if( num < start) xs
+      else rangeHelper(num -1, num :: xs)
+    }
+    rangeHelper(end, Nil)
+  }
   // p23
   def randomSelect[A](n: Int, xs: List[A]): List[A] = undefined
   
