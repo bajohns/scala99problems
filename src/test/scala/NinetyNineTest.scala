@@ -208,11 +208,39 @@ class NinetyNineTest extends Specification {
   }
 
   "P23 random" should {
-      val start = List('a, 'b, 'c, 'd, 'f, 'g, 'h)
+    val start = List('a, 'b, 'c, 'd, 'f, 'g, 'h)
 
-      "given 3 create a list of 3 random elements from" + start.toString in{
-        NN.randomSelect(3, start).length must_== 3
+    "given 3 create a list of 3 random elements from" + start.toString in{
+      NN.randomSelect(3, start).length must_== 3
 
-      }
     }
+  }
+
+  "P24 lotto" should {
+    val nums = 3
+
+    val upperBound = 50
+
+    val end = NN.lotto(nums,upperBound)
+    "given 3 create a list of "+nums+" random elements " in{
+      NN.length(end) must_== nums
+    }
+    "and send unique results" in {
+      end.toSet.size must_== end.length
+    }
+    "and all elements are bounded by the range" in {
+      end.foldLeft(0)( (x, y) => if (y >= 1 && y <= upperBound) x + 1 else x) must_== end.length
+    }
+  }
+
+  //test random?
+  "P25 random permutation" should {
+    val start = List(1, 2, 3, 4, 5, 6)
+
+    val end = NN.randomPermute(start)
+
+    "given a list of elements the permutation length must contain the same elements" in{
+      end.sortWith(_ > _) must_== start.sortWith(_ > _)
+    }
+  }
 }
