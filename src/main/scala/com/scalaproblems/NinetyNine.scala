@@ -204,22 +204,35 @@ object NinetyNine {
   def randomPermute[A](xs: List[A]): List[A] = randomSelect(length(xs), xs)
   
   // p26
-      /*
   def combinations[A](k: Int, xs: List[A]): List[List[A]] = {
 
 
-    //Stack bounded by k
-    def combineHelper(bound: Int, acc: List[A], tail: List[A], xs: List[A]): List[List[A]] = (bound, xs) match{
-        case (_, Nil) => acc
-        case (0, tail) =>
-        case (bound, x :: tail) => {
-
+    //Stack bounded by k + 1
+    def combineHelper(bound: Int, suffix: List[A], xs: List[A]): List[List[A]] = (bound, xs) match{
+        case (_, Nil) => List(Nil)
+        case (0, tail) => combineHelper2(Nil, suffix, tail)
+        case (bound, tail) => {
+          tail.foldLeft(List[List[A]]())((acc, listElem) => {
+            val xTail = tail.filter(_ !=listElem)
+            println("CombineHelper bound: " + bound + " checking lists " + xTail + " using prefix" + (listElem :: suffix).toString)
+            combineHelper(bound -1, listElem :: suffix, xTail) ::: acc
+          })
         }
     }
-scala> a map (x => a.filter(_ != x))
-res2: List[List[Int]] = List(List(2, 3), List(1, 3), List(1, 2))
 
-  }     */
+    //@tailrec
+    def combineHelper2(acc: List[List[A]], suffix: List[A], xs: List[A]): List[List[A]] = xs match{
+      case Nil => acc
+      case x :: Nil => (x :: suffix) :: acc
+      case x :: tail => {
+        println("CombineHelper2 suffix: " + suffix.toString + " using " + xs.toString + " with acc: " + ((x ::suffix) ::acc).toString)
+        combineHelper2((x :: suffix) :: acc, suffix, tail)
+      }
+    }
+
+
+    combineHelper(k-1, Nil, xs)
+  }
 
   // p27
   def group[T](ns: List[Int], l: List[T]): List[List[List[T]]] = undefined

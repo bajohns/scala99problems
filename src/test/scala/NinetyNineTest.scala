@@ -245,4 +245,19 @@ class NinetyNineTest extends Specification {
     }
   }
 
+  "P26 Combinations" should {
+    val start = List('a, 'b, 'c)
+    val end = List(List('b,'c), List('a,'c), List('c,'b), List('a, 'b), List('c, 'a), List('b, 'a))
+    "given " + start.toString + " should generate " + end.toString in {
+      NN.combinations(2, start) must_== end
+    }
+
+    val start2 = List(1,2,3,4,5,6,7,8,9,10,11,12)
+
+    val endVal = 220
+    "given " + start2 + " the length of the combinations list will be " + 220 in {
+      NN.combinations(3, start2).length must_== endVal
+    }
+  }
+
 }
