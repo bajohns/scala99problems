@@ -1,5 +1,8 @@
 package com.scalaproblems
 
+import annotation.tailrec
+import util.Random
+
 // http://aperiodic.net/phil/scala/s-99/
 object NinetyNine {
   val xs = List(1,2,3,4,5)
@@ -20,6 +23,7 @@ object NinetyNine {
   }
   
   def elementAt[A](n:Int, xs: List[A]): Option[A] =    {
+    @tailrec
     def findKthElem(count:Int, list: List[A]): Option[A] =   list match {
       case Nil => None
       case x :: Nil  => if (count == 0) Some(x) else None
@@ -134,10 +138,10 @@ object NinetyNine {
   def split[A](n: Int, xs: List[A]): (List[A], List[A]) = {
     def splitHelper(pos:Int, hs:List[A], ts:List[A]):(List[A], List[A]) = (pos, ts) match{
       case (_ , Nil) => (reverse(hs), Nil)
-      case (0, x :: tail) => (reverse(x :: hs), tail)
+      case (0, ts) => (reverse(hs), ts)
       case (_, x :: tail) => splitHelper(pos -1 , x :: hs, tail)
     }
-    splitHelper(n-1, Nil, xs)
+    splitHelper(n, Nil, xs)
   }
 
   def slice[A](start: Int, end: Int, xs: List[A]): List[A] = {
@@ -159,8 +163,9 @@ object NinetyNine {
   
   // P20
   def removeAt[A](n: Int, xs: List[A]): (List[A], A) = split(n,xs) match {
-    case (_, Nil) => throw new NoSuchElementException
-    case (hs, x :: ts) => (hs ::: ts, x)
+    case (Nil, _) if n < 0 => throw new NoSuchElementException
+    case (hs, x :: ts) =>  (hs ::: ts, x)
+    case (hs, Nil) => throw new NoSuchElementException
   }
   // P21
   //Inefficient - revise
@@ -177,17 +182,45 @@ object NinetyNine {
     rangeHelper(end, Nil)
   }
   // p23
-  def randomSelect[A](n: Int, xs: List[A]): List[A] = undefined
+  def randomSelect[A](n: Int, xs: List[A]): List[A] = {
+    val rand = new util.Random
+
+    @tailrec
+    def randHelper(n: Int, acs: List[A], xs:List[A], rand: util.Random):List[A] = {
+      if(n < 0) acs
+      else {
+        val (rxs, r) = removeAt(rand.nextInt(length(xs)), xs)
+
+        randHelper(n-1, r :: acs, rxs, rand)
+      }
+    }
+    randHelper(n-1, Nil, xs, rand)
+  }
   
   // p24
-  def lotto(n: Int, m: Int): List[Int] = undefined
+  def lotto(n: Int, m: Int): List[Int] = randomSelect(n, range(1, m))
   
   // p25
-  def randomPermute[A](xs: List[A]): List[A] = undefined
+  def randomPermute[A](xs: List[A]): List[A] = randomSelect(length(xs), xs)
   
   // p26
-  def combinations[A](k: Int, xs: List[A]): List[List[A]] = undefined
-  
+      /*
+  def combinations[A](k: Int, xs: List[A]): List[List[A]] = {
+
+
+    //Stack bounded by k
+    def combineHelper(bound: Int, acc: List[A], tail: List[A], xs: List[A]): List[List[A]] = (bound, xs) match{
+        case (_, Nil) => acc
+        case (0, tail) =>
+        case (bound, x :: tail) => {
+
+        }
+    }
+scala> a map (x => a.filter(_ != x))
+res2: List[List[Int]] = List(List(2, 3), List(1, 3), List(1, 2))
+
+  }     */
+
   // p27
   def group[T](ns: List[Int], l: List[T]): List[List[List[T]]] = undefined
   
